@@ -25,6 +25,9 @@ class CreateProductsTable extends Migration
             $table->string('productionperiod');
             $table->foreign('provider_id')->references('id')->on('providers')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
+
+
+
         });
     }
 

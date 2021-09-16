@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use Validator;
 
 class ProductController extends Controller
 {
@@ -19,13 +20,13 @@ class ProductController extends Controller
          *
          * @return \Illuminate\Http\Response
          */
-
-        $product =auth()->user()->product;
+        $products = Product::all();
         return response()->json([
             "success" => true,
             "message" => "Product List",
-            "data" => $product
+            "data" => $products
         ]);
+
     }
 
         /**
@@ -46,40 +47,26 @@ class ProductController extends Controller
          */
         public function store(Request $request)
     {
-        $this->validate($request, [
+
+        $input = $request->all();
+        $validator = Validator::make($input, [
             'provider_id' =>'required',
             'type_id' =>'required',
             'name' => 'required',
             'code' => 'required',
             'price' => 'required',
             'productiontime' => 'required',
-            'productionperiod' => 'required',
+            'productionperiod' => 'required'
         ]);
-
-        $product = new Product();
-        $product->provider_id = $request->provider_id ;
-        $product->type_id = $request->type_id;
-        $product->name = $request->name ;
-        $product->code = $request->code;
-        $product->price = $request->price ;
-        $product->productiontime = $request->productiontime;
-        $product->productionperiod = $request->productionperiod ;
-
-
-        if (auth()->user()->product()->save($product))
-            return response()->json([
-                'success' => true,
-                'data' => $product->toArray()
-            ]);
-        else
-            return response()->json([
-                'success' => false,
-                'message' => 'product could not be added!'
-            ], 500);
-
-
-
-
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+        $product = Product::create($input);
+        return response()->json([
+            "success" => true,
+            "message" => "Product created successfully.",
+            "data" => $product
+        ]);
 
     }
 
@@ -91,19 +78,15 @@ class ProductController extends Controller
          */
         public function show($id)
     {
-        $product = auth()->user()->product()->find($id);
-
-        if (!($product)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'product is not available! '
-            ], 400);
+        $product = Product::find($id);
+        if (is_null($product)) {
+            return $this->sendError('Product not found.');
         }
-
         return response()->json([
-            'success' => true,
-            'data' => $product->toArray()
-        ], 400);
+            "success" => true,
+            "message" => "Product retrieved successfully.",
+            "data" => $product
+        ]);
     }
 
         /**
@@ -124,28 +107,34 @@ class ProductController extends Controller
          * @param  int  $id
          * @return \Illuminate\Http\Response
          */
-        public function update(Request $request, $id)
+        public function update(Request $request, Product $product)
     {
-        $product = auth()->user()->product()->find($id);
-
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'message' => 'product could not be found!'
-            ], 400);
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'provider_id' =>'required',
+            'type_id' =>'required',
+            'name' => 'required',
+            'code' => 'required',
+            'price' => 'required',
+            'productiontime' => 'required',
+            'productionperiod' => 'required'
+        ]);
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
         }
-
-        $updated = $product->fill($request->all())->save();
-
-        if ($updated)
-            return response()->json([
-                'success' => true
-            ]);
-        else
-            return response()->json([
-                'success' => false,
-                'message' => 'product could not be updated!'
-            ], 500);
+        $product->provider_id = $input['provider_id'];
+        $product->type_id = $input['type_id'];
+        $product->name = $input['name'];
+        $product->code = $input['code'];
+        $product->price = $input['price'];
+        $product->productiontime = $input['productiontime'];
+        $product->productionperiod = $input['productionperiod'];
+        $product->save();
+        return response()->json([
+            "success" => true,
+            "message" => "Product updated successfully.",
+            "data" => $product
+        ]);
     }
 
         /**
@@ -154,26 +143,13 @@ class ProductController extends Controller
          * @param  int  $id
          * @return \Illuminate\Http\Response
          */
-        public function destroy($id)
-    {
-        $product = auth()->user()->product()->find($id);
-
-        if (!$product) {
+        public function destroy(Product $product)
+        {
+            $product->delete();
             return response()->json([
-                'success' => false,
-                'message' => 'product could not be found!'
-            ], 400);
-        }
-
-        if ($product->delete()) {
-            return response()->json([
-                'success' => true
+                "success" => true,
+                "message" => "Product deleted successfully.",
+                "data" => $product
             ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'product could not be deleted!'
-            ], 500);
         }
-    }
-    }
+}
