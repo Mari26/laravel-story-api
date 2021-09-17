@@ -45,4 +45,12 @@ class PassportAuthController extends Controller
             return response()->json(['error' => 'Unauthorised'], 401);
         }
     }
+    public function userInfo()
+    {
+
+        $user = auth()->user();
+
+        return response()->json(['user' => $user], 200);
+
+    }
 }
