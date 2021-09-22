@@ -22,7 +22,6 @@ class ProductResource extends JsonResource
             'price' => $this->price,
             'productiontime' => $this->productiontime,
             'productionperiod' => $this->productionperiod,
-
         ];
     }
 }

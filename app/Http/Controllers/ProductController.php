@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use app\Http\Request\ProductRequest;
-use app\Http\Resources\ProductResource;
+use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
 
 class ProductController extends Controller
 {
@@ -21,10 +21,9 @@ class ProductController extends Controller
          *
          * @return \Illuminate\Http\Response
          */
+
         $products = Product::all();
         return ProductResource::collection($products);
-
-
     }
 
         /**
