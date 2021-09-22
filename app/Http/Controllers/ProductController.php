@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use app\Http\Request\ProductRequest;
+use app\Http\Resources\ProductResource;
 
 class ProductController extends Controller
 {
@@ -21,11 +22,8 @@ class ProductController extends Controller
          * @return \Illuminate\Http\Response
          */
         $products = Product::all();
-        return response()->json([
-            "success" => true,
-            "message" => "Product List",
-            "data" => $products
-        ]);
+        return ProductResource::collection($products);
+
 
     }
 
@@ -50,11 +48,7 @@ class ProductController extends Controller
         $validated = $request->validated();
         $product = Product::create($validated);
 
-        return response()->json([
-            "success" => true,
-            "message" => "Product created successfully.",
-            "data" => $product
-        ]);
+        return ProductResource::collection($product);
 
     }
 
@@ -70,11 +64,7 @@ class ProductController extends Controller
         if (is_null($product)) {
             return $this->sendError('Product not found.');
         }
-        return response()->json([
-            "success" => true,
-            "message" => "Product retrieved successfully.",
-            "data" => $product
-        ]);
+        return ProductResource::collection($product);
     }
 
         /**
@@ -109,11 +99,7 @@ class ProductController extends Controller
         $product->productiontime = $validated['productiontime'];
         $product->productionperiod = $validated['productionperiod'];
         $product->save();
-        return response()->json([
-            "success" => true,
-            "message" => "Product updated successfully.",
-            "data" => $product
-        ]);
+        return ProductResource::collection($product);
     }
 
         /**
@@ -125,10 +111,6 @@ class ProductController extends Controller
         public function destroy(Product $product)
         {
             $product->delete();
-            return response()->json([
-                "success" => true,
-                "message" => "Product deleted successfully.",
-                "data" => $product
-            ]);
+            return response()->json(null, 204);
         }
 }
