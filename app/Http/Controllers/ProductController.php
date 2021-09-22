@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Validator;
+use app\Http\Request\ProductRequest;
 
 class ProductController extends Controller
 {
@@ -45,23 +45,11 @@ class ProductController extends Controller
          * @param  \Illuminate\Http\Request  $request
          * @return \Illuminate\Http\Response
          */
-        public function store(Request $request)
+        public function store(ProductRequest $request)
     {
+        $validated = $request->validated();
+        $product = Product::create($validated);
 
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'provider_id' =>'required',
-            'type_id' =>'required',
-            'name' => 'required',
-            'code' => 'required',
-            'price' => 'required',
-            'productiontime' => 'required',
-            'productionperiod' => 'required'
-        ]);
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-        $product = Product::create($input);
         return response()->json([
             "success" => true,
             "message" => "Product created successfully.",
@@ -107,28 +95,19 @@ class ProductController extends Controller
          * @param  int  $id
          * @return \Illuminate\Http\Response
          */
-        public function update(Request $request, Product $product)
+        public function update(ProductRequest $request, Product $product)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'provider_id' =>'required',
-            'type_id' =>'required',
-            'name' => 'required',
-            'code' => 'required',
-            'price' => 'required',
-            'productiontime' => 'required',
-            'productionperiod' => 'required'
-        ]);
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
+        $validated = $request->validated();
+        if($validated->fails()){
+            return $this->sendError('Validation Error.', $validated->errors());
         }
-        $product->provider_id = $input['provider_id'];
-        $product->type_id = $input['type_id'];
-        $product->name = $input['name'];
-        $product->code = $input['code'];
-        $product->price = $input['price'];
-        $product->productiontime = $input['productiontime'];
-        $product->productionperiod = $input['productionperiod'];
+        $product->provider_id = $validated['provider_id'];
+        $product->type_id = $validated['type_id'];
+        $product->name = $validated['name'];
+        $product->code = $validated['code'];
+        $product->price = $validated['price'];
+        $product->productiontime = $validated['productiontime'];
+        $product->productionperiod = $validated['productionperiod'];
         $product->save();
         return response()->json([
             "success" => true,
