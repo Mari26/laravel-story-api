@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
+use App\models\Provider;
+use App\Http\Requests\ProviderRequest;
+use App\Http\Resources\ProviderResource;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserRequest;
-use App\Http\Resources\UserResource;
 
-class UserController extends Controller
+class ProviderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +15,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-
-        return UserResource::collection($users);
+        $provider=Provider::all();
+        return ProviderResource::collection($provider);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -26,12 +26,12 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $request)
+    public function store(ProviderRequest $request)
     {
-        $validated = $request->validated();
-        $user = User::create($validated);
+          $validated=$request->validated();
+          $provider = Provider::create($validated);
 
-        return UserResource::collection($user);
+          return ProviderResource::collection($provider);
     }
 
     /**
@@ -42,13 +42,14 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
+        $provider = Provider::find($id);
 
-        if (is_null($user)) {
-            return $this->sendError('user not found.');
+        if (is_null($provider)) {
+            return $this->sendError('provider not found.');
         }
-        return UserResource::collection($user);
+        return ProviderResource::collection($provider);
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -57,16 +58,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserResource $request, User $user)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validated();
-
-        if($validated->fails()){
-            return $this->sendError('Validation Error.', $validated->errors());
-        }
-        $user->save();
-
-        return ProductResource::collection($user);
+        //
     }
 
     /**
@@ -75,9 +69,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Provider $provider)
     {
-        $user->delete();
+        $provider->delete();
 
         return response()->json(null, 204);
     }

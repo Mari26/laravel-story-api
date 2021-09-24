@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PassportAuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProviderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('products', ProductController::class);
     Route::resource('users', UserController::class);
+    Route::resource('users', ProviderController::class);
 
 });
 
