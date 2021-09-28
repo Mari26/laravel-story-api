@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use app\Http\Request\ProductRequest;
+use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
 
 class ProductController extends Controller
 {
@@ -14,30 +15,17 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        /**
-         * Display a listing of the resource.
-         *
-         * @return \Illuminate\Http\Response
-         */
-        $products = Product::all();
-        return response()->json([
-            "success" => true,
-            "message" => "Product List",
-            "data" => $products
-        ]);
+     {
+      $products = Product::all();
 
-    }
+      return ProductResource::collection($products);
+     }
 
         /**
          * Show the form for creating a new resource.
          *
          * @return \Illuminate\Http\Response
          */
-        public function create()
-    {
-
-    }
 
         /**
          * Store a newly created resource in storage.
@@ -46,17 +34,13 @@ class ProductController extends Controller
          * @return \Illuminate\Http\Response
          */
         public function store(ProductRequest $request)
-    {
+        {
         $validated = $request->validated();
         $product = Product::create($validated);
 
-        return response()->json([
-            "success" => true,
-            "message" => "Product created successfully.",
-            "data" => $product
-        ]);
+        return ProductResource::collection($product);
 
-    }
+        }
 
         /**
          * Display the specified resource.
@@ -65,28 +49,14 @@ class ProductController extends Controller
          * @return \Illuminate\Http\Response
          */
         public function show($id)
-    {
+        {
         $product = Product::find($id);
+
         if (is_null($product)) {
             return $this->sendError('Product not found.');
         }
-        return response()->json([
-            "success" => true,
-            "message" => "Product retrieved successfully.",
-            "data" => $product
-        ]);
-    }
-
-        /**
-         * Show the form for editing the specified resource.
-         *
-         * @param  int  $id
-         * @return \Illuminate\Http\Response
-         */
-        public function edit($id)
-    {
-        //
-    }
+        return ProductResource::collection($product);
+        }
 
         /**
          * Update the specified resource in storage.
@@ -96,25 +66,16 @@ class ProductController extends Controller
          * @return \Illuminate\Http\Response
          */
         public function update(ProductRequest $request, Product $product)
-    {
+        {
         $validated = $request->validated();
+
         if($validated->fails()){
             return $this->sendError('Validation Error.', $validated->errors());
         }
-        $product->provider_id = $validated['provider_id'];
-        $product->type_id = $validated['type_id'];
-        $product->name = $validated['name'];
-        $product->code = $validated['code'];
-        $product->price = $validated['price'];
-        $product->productiontime = $validated['productiontime'];
-        $product->productionperiod = $validated['productionperiod'];
         $product->save();
-        return response()->json([
-            "success" => true,
-            "message" => "Product updated successfully.",
-            "data" => $product
-        ]);
-    }
+
+        return ProductResource::collection($product);
+        }
 
         /**
          * Remove the specified resource from storage.
@@ -124,11 +85,8 @@ class ProductController extends Controller
          */
         public function destroy(Product $product)
         {
-            $product->delete();
-            return response()->json([
-                "success" => true,
-                "message" => "Product deleted successfully.",
-                "data" => $product
-            ]);
+         $product->delete();
+
+         return response()->json(null, 204);
         }
 }

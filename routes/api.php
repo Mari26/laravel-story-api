@@ -4,8 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PassportAuthController;
 use App\Http\Controllers\ProductController;
-use App\Http\Resources\ProductResource;
-use App\Models\Product;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProviderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,12 +27,11 @@ Route::post('register', [PassportAuthController::class, 'register']);
 Route::post('login', [PassportAuthController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('get-user', [PassportAuthController::class, 'userInfo']);
+//    Route::get('get-user', [PassportAuthController::class, 'userInfo']);
 
-    Route::get('products', function ($id) {
-        return new ProductResource(Product::findOrFail($id));
-    });
-//    Route::resource('products', ProductController::class);
+    Route::resource('products', ProductController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('users', ProviderController::class);
 
 });
 
