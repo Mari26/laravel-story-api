@@ -16,8 +16,8 @@ class CreateConsultanttypesTable extends Migration
         Schema::create('consultanttypes', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->timestamps();
-                $table->bigInteger('consultant_id')->unsigned();;
-                $table->bigInteger('type_id')->unsigned();;
+                $table->bigInteger('consultant_id')->unsigned();
+                $table->bigInteger('type_id')->unsigned();
                 $table->text('name');
                 $table->foreign('consultant_id')->references('id')->on('consultants')->onDelete('cascade');
                 $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');;

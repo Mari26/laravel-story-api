@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
+use App\Mail\NewUserNotification;
+use App\Models\Customer;
 use App\Models\Product;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class ProductController extends Controller
 {
@@ -89,4 +94,32 @@ class ProductController extends Controller
 
          return response()->json(null, 204);
         }
+
+    public  function buy(Product $product, Customer $customer, Request $request)
+    {
+        try {
+            $totalPrice = $request->quantity * $product->price;
+            if($totalPrice <= $customer->money && $request->quantity <= $product->quantity) {
+                $customer->money -= $totalPrice;
+                $product->quantity -= $request->quantity;
+                $customer->save();
+                $product->save();
+                Transaction::create([
+                    'product_id' => $product->id,
+                    'user_id' => Auth::id(),
+                    'customer_id' => $customer->id,
+                    'product_price' => $product->price,
+//                    'quantity' => $request->quantity
+                ]);
+                Mail::to(Auth::user()->email)->send(new NewUserNotification($customer));
+
+                return true;
+            }
+            return response()->json(['message' => 'You do not have enough money in your account']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
 }
+

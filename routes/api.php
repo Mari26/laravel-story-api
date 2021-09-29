@@ -31,7 +31,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('products', ProductController::class);
     Route::resource('users', UserController::class);
-    Route::resource('users', ProviderController::class);
+    Route::resource('providers', ProviderController::class);
+    Route::post('product/buy/{product}/{customer}', [ProductController::class,'buy']);
 
 });
 
