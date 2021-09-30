@@ -6,6 +6,7 @@ use App\Mail\NewUserNotification;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Transaction;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
@@ -111,13 +112,19 @@ class ProductController extends Controller
                     'product_price' => $product->price,
 //                    'quantity' => $request->quantity
                 ]);
-                Mail::to(Auth::user()->email)->send(new NewUserNotification($customer));
 
-                return true;
+                $details = [
+                    'title' => 'Mail from me.com',
+                    'body' => $customer->money."-tqvens angarishze darchenilia Tanxa",
+                ];
+                Mail::to(Auth::user()->email)->send(new NewUserNotification($details));
+
+                return Response()->json(['message' => 'You have enough money in your account']);
             }
             return response()->json(['message' => 'You do not have enough money in your account']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
+
         }
     }
 
