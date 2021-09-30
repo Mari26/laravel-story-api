@@ -116,6 +116,8 @@ class ProductController extends Controller
                 $details = [
                     'title' => 'Mail from me.com',
                     'body' => $customer->money."-tqvens angarishze darchenilia Tanxa",
+                    'product' => $product->name."-produqtis dasaxeleba",
+                    'quantity'=>$request->quantity."-shedzenili produqtis raodenoba"
                 ];
                 Mail::to(Auth::user()->email)->send(new NewUserNotification($details));
 
