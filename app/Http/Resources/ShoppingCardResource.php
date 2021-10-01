@@ -17,7 +17,7 @@ class ShoppingCardResource extends JsonResource
         return [
             'customer_id' => $this->customer_id,
             'product_id' => $this->type_id,
-
+            'product-quantity' => $this->product-quantity,
         ];
     }
 }

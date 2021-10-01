@@ -6,7 +6,7 @@ use App\Http\Controllers\PassportAuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProviderController;
-
+use App\Http\Controllers\ShoppingCardController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,6 +33,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('providers', ProviderController::class);
     Route::post('product/buy/{product}/{customer}', [ProductController::class,'buy']);
+    Route::resource('card', ShoppingCardController::class);
 
 });
 

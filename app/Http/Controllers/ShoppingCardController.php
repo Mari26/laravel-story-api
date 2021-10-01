@@ -1,10 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Customer;
+use App\Models\Product;
+use App\Models\ShoppingCard;
+use App\Http\Requests\ShoppingCardRequest;
+use App\Http\Resources\ShoppingCardResource;
 use Illuminate\Http\Request;
 
-class ShoppingCard extends Controller
+class ShoppingCardController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +17,8 @@ class ShoppingCard extends Controller
      */
     public function index()
     {
-        //
+        $card = ShoppingCard::all();
+        return ShoppingCardResource::collection($card);
     }
 
     /**
@@ -32,13 +37,18 @@ class ShoppingCard extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ShoppingCardRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $ShoppingCar = ShoppingCard::create($validated);
+
+        return ShoppingCardResource::collection($ShoppingCar);
     }
 
     /**
      * Display the specified resource.
+     *
+     *
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response

@@ -13,7 +13,7 @@ class ShoppingCardRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -26,6 +26,7 @@ class ShoppingCardRequest extends FormRequest
         return [
             'customer_id'=>'required',
             'product_id' => 'required',
+            'product-quantity' => 'required',
         ];
     }
 }

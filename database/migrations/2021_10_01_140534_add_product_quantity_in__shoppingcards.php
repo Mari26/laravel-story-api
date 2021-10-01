@@ -14,7 +14,7 @@ class AddProductQuantityInShoppingcards extends Migration
     public function up()
     {
         Schema::table('Shoppingcards', function (Blueprint $table) {
-           $table->integer('product-quantity')->after('product_id');
+            $table->integer('product_quantity')->after('product_id');
         });
     }
 
